@@ -66,7 +66,7 @@ int main (int argc, char **argv) {
      }
      do
      {
-        size = recv (new_socket, buffer, BUF-1, 0);
+        size = recv (new_socket, buffer, BUF, 0);
         if( size > 0)
         {
             buffer[size] = '\0';
@@ -81,17 +81,19 @@ int main (int argc, char **argv) {
                 struct stat file_stats;
                 if ((dir = opendir (argv[2])) != NULL)
                 {
-                    printf("test1");
+                    //printf("test1");
                     /* print all the files within directory */
                     while ((ent = readdir (dir)) != NULL)
                     {
-                        printf("test2");
+                        //printf("test2");
                         stat(ent->d_name, &file_stats);
                         if(ent->d_type == DT_REG)
                         {
-                            printf("test3");
+                            //stat(ent->d_name, &file_stats);
+                            //printf("test3");
+                            printf (buffer, sizeof(buffer), "%s %u Bytes\n", ent->d_name, (unsigned int)file_stats.st_size);
                             snprintf (buffer, sizeof(buffer), "%s %u Bytes\n", ent->d_name, (unsigned int)file_stats.st_size);
-                            send(new_socket, buffer, strlen(buffer),0);
+                            send(new_socket, buffer, strlen(buffer), 0);
                         }
                   }
                   closedir (dir);

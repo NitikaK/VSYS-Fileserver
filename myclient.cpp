@@ -35,7 +35,7 @@ int main (int argc, char **argv) {
   if (connect ( create_socket, (struct sockaddr *) &address, sizeof (address)) == 0)
   {
      printf ("Connection with server (%s) established\n", inet_ntoa (address.sin_addr));
-     size=recv(create_socket,buffer,BUF-1, 0);
+     size=recv(create_socket,buffer,BUF, 0);
      if (size>0)
      {
         buffer[size]= '\0';
@@ -51,12 +51,18 @@ int main (int argc, char **argv) {
   do {
      printf ("Send request: ");
      fgets (buffer, BUF, stdin);
-     send(create_socket, buffer, strlen (buffer), 0);
-     size=recv(create_socket,buffer,BUF-1, 0);
-     if (size>0)
+     if (strcmp (buffer, "LIST\n") == 0) {
+       send(create_socket, buffer, strlen (buffer), 0);
+       size=recv(create_socket, buffer, BUF, 0);
+       if (size>0)
+       {
+          buffer[size]= '\0';
+          printf("%s", buffer);
+       }
+     }
+     else
      {
-        buffer[size]= '\0';
-        printf("%s",buffer);
+      printf("lol\n");
      }
   }
   while (strcmp (buffer, "quit\n") != 0);
