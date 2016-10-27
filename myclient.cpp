@@ -51,7 +51,8 @@ int main (int argc, char **argv) {
   do {
      printf ("Send request: ");
      fgets (buffer, BUF, stdin);
-     if (strcmp (buffer, "LIST\n") == 0) {
+     if (strcmp (buffer, "LIST\n") == 0) 
+     {
        send(create_socket, buffer, strlen (buffer), 0);
        size=recv(create_socket, buffer, BUF, 0);
        if (size>0)
@@ -60,12 +61,17 @@ int main (int argc, char **argv) {
           printf("%s", buffer);
        }
      }
+     else if (strcmp(buffer, "QUIT\n") == 0)
+     {
+      close(create_socket);
+      return EXIT_SUCCESS;
+     }
      else
      {
-      printf("lol\n");
+      printf("Try again\n");
      }
   }
-  while (strcmp (buffer, "quit\n") != 0);
+  while (strcmp (buffer, "QUIT\n") != 0);
   close (create_socket);
   return EXIT_SUCCESS;
 }
