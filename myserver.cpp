@@ -26,8 +26,6 @@ int main (int argc, char **argv) {
   int create_socket, new_socket;
   socklen_t addrlen;
   char buffer[BUF];
-  //use subbuffer for first 3 characters of input string
-  char subbuff[4];
   char filename[128];
   int size;
   struct sockaddr_in address, cliaddress;
@@ -69,32 +67,28 @@ int main (int argc, char **argv) {
      }
      do
      {
+        memset(buffer, 0, BUF);
+        memset(filename, 0, 128);
         size = recv (new_socket, buffer, BUF-1, 0);
-        if( size > 0)
+        if(size > 0)
         {
             buffer[size] = '\0';
             printf ("Message received: %s\n", buffer);
-            memcpy(subbuff, &buffer[0], 3);
-            memcpy(filename, &buffer[4], size);
-            subbuff[3] = '\0';
             if (strcmp (buffer, "LIST\n") == 0)
             {
           
                 if ((dir = opendir (argv[2])) != NULL)
                 {
-                    //printf("test1");
                     /* print all the files within directory */
                     while ((ent = readdir (dir)) != NULL)
                     {
-                        //printf("test2");
                         stat(ent->d_name, &file_stats);
                         if(ent->d_type == DT_REG)
                         {
                             //stat(ent->d_name, &file_stats);
-                            //printf("test3");
                             // memset(buffer, 0, sizeof(int));
-                            stat(ent->d_name, &file_stats);
-                            printf (buffer, sizeof(buffer), "%s %u Bytes\n", ent->d_name, (unsigned int)file_stats.st_size);
+                            //stat(ent->d_name, &file_stats);
+                            printf ("%s %u Bytes\n", ent->d_name, (unsigned int)file_stats.st_size);
                             snprintf (buffer, sizeof(buffer), "%s %u Bytes\n", ent->d_name, (unsigned int)file_stats.st_size);
                             send(new_socket, buffer, strlen(buffer), 0);
                         }
@@ -109,22 +103,28 @@ int main (int argc, char **argv) {
                     return EXIT_FAILURE;
                 }
             }
-            if (strcmp (subbuff, "GET") == 0)
-            {
-                fileStream.open(filename);
-                fileStream << "123";
-                fileStream.close();
-
-            }
-            if (strcmp (subbuff, "PUT") == 0)
-            {
-
-            }
-            if (strcmp (buffer, "QUIT\n") == 0)
+            else if (strcmp (buffer, "QUIT\n") == 0)
             {
               close(new_socket);
               close (create_socket);
               return EXIT_SUCCESS;
+            }
+            else
+            {
+		    memcpy(filename, &buffer[4], size);
+		    filename[127] = '\0';
+		    if (strncmp (buffer, "GET", 3) == 0)
+		    {
+		        /*fileStream.open(filename);
+		        fileStream << "123";
+		        fileStream.close();*/
+			printf("%s", filename);
+
+		    }
+		    else if (strncmp (buffer, "PUT", 3) == 0)
+		    {
+			printf("%s", filename);
+		    }
             }
 
         }

@@ -13,6 +13,7 @@
 int main (int argc, char **argv) {
   int create_socket;
   char buffer[BUF];
+  memset(buffer, 0, BUF);
   struct sockaddr_in address;
   int size;
 
@@ -49,9 +50,10 @@ int main (int argc, char **argv) {
   }
 
   do {
+     memset(buffer, 0, BUF);
      printf ("Send request: ");
      fgets (buffer, BUF, stdin);
-     if (strcmp (buffer, "LIST\n") == 0) 
+     if (strncmp (buffer, "LIST", 4) == 0) 
      {
        send(create_socket, buffer, strlen (buffer), 0);
        size=recv(create_socket, buffer, BUF, 0);
@@ -61,17 +63,36 @@ int main (int argc, char **argv) {
           printf("%s", buffer);
        }
      }
-     else if (strcmp(buffer, "QUIT\n") == 0)
+     else if (strncmp (buffer, "PUT", 3) == 0) 
      {
-      close(create_socket);
-      return EXIT_SUCCESS;
+       send(create_socket, buffer, strlen (buffer), 0);
+       /*size=recv(create_socket, buffer, BUF, 0);
+       if (size>0)
+       {
+          buffer[size]= '\0';
+          printf("%s", buffer);
+       }*/
+     }
+     else if (strncmp (buffer, "GET", 3) == 0) 
+     {
+       send(create_socket, buffer, strlen (buffer), 0);
+       /*size=recv(create_socket, buffer, BUF, 0);
+       if (size>0)
+       {
+          buffer[size]= '\0';
+          printf("%s", buffer);
+       }*/
+     }
+     else if (strncmp(buffer, "QUIT", 4) == 0)
+     {
+      printf("Quitting...\n");
      }
      else
      {
       printf("Try again\n");
      }
   }
-  while (strcmp (buffer, "QUIT\n") != 0);
+  while (strncmp (buffer, "QUIT", 4) != 0);
   close (create_socket);
   return EXIT_SUCCESS;
 }
