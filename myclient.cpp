@@ -12,8 +12,12 @@
 
 int main (int argc, char **argv) {
   int create_socket;
+<<<<<<< HEAD
   char buffer[BUF];
   memset(buffer, 0, BUF);
+=======
+  char buffer[BUF], filename[256], subbuff[4];
+>>>>>>> origin/Experiment
   struct sockaddr_in address;
   int size;
 
@@ -53,7 +57,7 @@ int main (int argc, char **argv) {
      memset(buffer, 0, BUF);
      printf ("Send request: ");
      fgets (buffer, BUF, stdin);
-     if (strncmp (buffer, "LIST", 4) == 0) 
+     if (strncmp (buffer, "LIST", 4) == 0)
      {
        send(create_socket, buffer, strlen (buffer), 0);
        size=recv(create_socket, buffer, BUF, 0);
@@ -61,9 +65,21 @@ int main (int argc, char **argv) {
        {
           buffer[size]= '\0';
           printf("%s", buffer);
+
+          //bzero(buffer,BUF);
        }
      }
+<<<<<<< HEAD
      else if (strncmp (buffer, "PUT", 3) == 0) 
+=======
+      else if (buffer[0] == 'P' && buffer[1] == 'U' && buffer[2] == 'T')
+      {
+            printf("%s\n", buffer);     
+
+           // bzero(buffer, BUF);
+      }
+     else if (strcmp(buffer, "QUIT\n") == 0)
+>>>>>>> origin/Experiment
      {
        send(create_socket, buffer, strlen (buffer), 0);
        /*size=recv(create_socket, buffer, BUF, 0);

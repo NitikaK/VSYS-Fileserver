@@ -94,6 +94,7 @@ int main (int argc, char **argv) {
                         }
                   }
                   closedir (dir);
+                  bzero(buffer, sizeof(buffer));
                 }
                 else
                 {
