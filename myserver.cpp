@@ -100,6 +100,7 @@ int main (int argc, char **argv) {
                         }
                   }
                   closedir (dir);
+                  bzero(buffer, sizeof(buffer));
                 }
                 else
                 {
@@ -116,8 +117,9 @@ int main (int argc, char **argv) {
                 fileStream.close();
 
             }
-            if (strcmp (subbuff, "PUT") == 0)
+            if (buffer[0] == 'P' && buffer[1] == 'U' && buffer[2] == 'T')
             {
+              
 
             }
             if (strcmp (buffer, "QUIT\n") == 0)
