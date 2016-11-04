@@ -12,7 +12,12 @@
 
 int main (int argc, char **argv) {
   int create_socket;
+<<<<<<< HEAD
+  char buffer[BUF];
+  memset(buffer, 0, BUF);
+=======
   char buffer[BUF], filename[256], subbuff[4];
+>>>>>>> origin/Experiment
   struct sockaddr_in address;
   int size;
 
@@ -49,12 +54,10 @@ int main (int argc, char **argv) {
   }
 
   do {
-      printf ("Send request: ");
-      fgets (buffer, BUF, stdin);
-      // memcpy(subbuff, &buffer[0], 3);
-      // memcpy(filename, &buffer[4], size);
-      // subbuff[3] = '\0';
-     if (strcmp (buffer, "LIST\n") == 0) 
+     memset(buffer, 0, BUF);
+     printf ("Send request: ");
+     fgets (buffer, BUF, stdin);
+     if (strncmp (buffer, "LIST", 4) == 0)
      {
        send(create_socket, buffer, strlen (buffer), 0);
        size=recv(create_socket, buffer, BUF, 0);
@@ -66,6 +69,9 @@ int main (int argc, char **argv) {
           //bzero(buffer,BUF);
        }
      }
+<<<<<<< HEAD
+     else if (strncmp (buffer, "PUT", 3) == 0) 
+=======
       else if (buffer[0] == 'P' && buffer[1] == 'U' && buffer[2] == 'T')
       {
             printf("%s\n", buffer);     
@@ -73,16 +79,36 @@ int main (int argc, char **argv) {
            // bzero(buffer, BUF);
       }
      else if (strcmp(buffer, "QUIT\n") == 0)
+>>>>>>> origin/Experiment
      {
-      close(create_socket);
-      return EXIT_SUCCESS;
+       send(create_socket, buffer, strlen (buffer), 0);
+       /*size=recv(create_socket, buffer, BUF, 0);
+       if (size>0)
+       {
+          buffer[size]= '\0';
+          printf("%s", buffer);
+       }*/
+     }
+     else if (strncmp (buffer, "GET", 3) == 0) 
+     {
+       send(create_socket, buffer, strlen (buffer), 0);
+       /*size=recv(create_socket, buffer, BUF, 0);
+       if (size>0)
+       {
+          buffer[size]= '\0';
+          printf("%s", buffer);
+       }*/
+     }
+     else if (strncmp(buffer, "QUIT", 4) == 0)
+     {
+      printf("Quitting...\n");
      }
      else
      {
       printf("Try again\n");
      }
   }
-  while (strcmp (buffer, "QUIT\n") != 0);
+  while (strncmp (buffer, "QUIT", 4) != 0);
   close (create_socket);
   return EXIT_SUCCESS;
 }
